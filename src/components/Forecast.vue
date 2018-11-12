@@ -15,10 +15,7 @@
       </li>
     </ul>
     <div v-else-if="errors.length > 0">
-      <h2>There was an error fetching weather data.</h2>
-      <ul class="errors">
-        <li v-for="error in errors">{{ error }}</li>
-      </ul>
+    <error-list v-bind:errorslist="errors"></error-list>
     </div>
     <div v-else>
       <h2>Loading...</h2>
@@ -28,8 +25,10 @@
 
 <script>
 import {API} from '@/common/api';
+import CommonFilters from '@/common/filters.js';
 import WeatherSummary from '@/components/WeatherSummary';
 import WeatherData from '@/components/WeatherData';
+import ErrorList from '@/components/ErrorList';
 
 export default {
   name: 'Forecast',
@@ -53,32 +52,11 @@ export default {
       this.errors.push(error)
     });
   },
-  filters: {
-    formatDate: function (timestamp){
-      let date = new Date(timestamp * 1000);
-      const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-      const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-      //let weekday = date.getDay();
-      let daynum = date.getDate();
-      let month = date.getMonth();
-
-      let hour = date.getHours();
-      if (hour === 12) {
-        hour = 'Noon';
-      } else if (hour === 0) {
-        hour = 'Midnight';
-      } else if (hour > 12) {
-        hour = hour - 12 + 'PM';
-      } else if (hour < 12) {
-        hour = hour + 'AM';
-      }
-      //let year = date.getFullYear();
-      return `${ months[month] } ${ daynum } @ ${ hour }`;
-    }
-  },
-    components: {
+  filters: CommonFilters,
+  components: {
     'weather-summary': WeatherSummary,
-    'weather-data': WeatherData
+    'weather-data': WeatherData,
+    'error-list': ErrorList
   }
 }
 </script>
